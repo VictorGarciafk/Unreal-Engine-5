@@ -4,6 +4,12 @@
 #include "GameFramework/Character.h"
 #include "Player01.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+class UInputMappingContext;
+class UInputAction;
+struct FInputActionValue;
+
 UCLASS()
 class UE5CURSO_API APlayer01 : public ACharacter
 {
@@ -14,8 +20,23 @@ public:
 	APlayer01();
 
 protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = Components)
+	USpringArmComponent* SpringArmComponent;
+	
+	UPROPERTY(EditDefaultsOnly, Category = Components)
+	UCameraComponent* CameraComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputMappingContext* DefaultMappingContext;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputAction* MoveAction;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void Move(const FInputActionValue& value);
 
 public:	
 

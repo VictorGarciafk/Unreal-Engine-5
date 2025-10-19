@@ -1,5 +1,9 @@
-#include "Player01.h"
 
+#include "Player01.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
 
 // Sets default values
 APlayer01::APlayer01()
@@ -7,18 +11,38 @@ APlayer01::APlayer01()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	
+	//
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
+	SpringArmComponent->SetupAttachment(RootComponent);
+	SpringArmComponent->TargetArmLength = 400.0f;
+
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
+	CameraComponent->SetupAttachment(SpringArmComponent);
+	
 }
 
 // Called when the game starts or when spawned
 void APlayer01::BeginPlay()
 {
 	Super::BeginPlay();
+
+	APlayerController* playerController = Cast<APlayerController>(Controller);
+	if (!IsValid(playerController)) return;
+
 	
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
+	if (!IsValid(Subsystem)) return;
+
+	Subsystem->AddMappingContext(DefaultMappingContext,0);
+	/*
 	//mostramos en pantalla un mensaje al iniciar el juego
 	GEngine->AddOnScreenDebugMessage(-1,10.0f, FColor::Blue, TEXT("Hellouda Player"));
 
 	//Escribimos en el archivo LOG un mensaje al ejecutar el juego
 	UE_LOG(LogTemp, Log, TEXT("Hellouda Player"));
+	*/
+	
 }
 
 // Called every frame
@@ -33,6 +57,24 @@ void APlayer01::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (!IsValid(EnhancedInputComponent)) return;
+
+	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered,this, &APlayer01::Move);
 }
 
+void APlayer01::Move(const FInputActionValue& InputActionValue) {
+	//UE_LOG(LogTemp, Log, TEXT("MOVE!!"));
 
+	FVector2D movementVector = InputActionValue.Get<FVector2d>();
+	if (!IsValid(Controller)) return;
+
+	const FRotator rotation = Controller->GetControlRotation();
+	const FRotator yawRotation = FRotator(0,rotation.Yaw,0);
+
+	const FVector forwardDirection = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::X);
+	const FVector rigDirection = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::Y);
+
+	AddMovementInput(forwardDirection, movementVector.Y);
+	AddMovementInput(rigDirection, movementVector.X);
+}
