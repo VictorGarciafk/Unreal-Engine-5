@@ -33,11 +33,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	UInputAction* MoveAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputAction* LookAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputAction* JumpAction;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	void Move(const FInputActionValue& value);
-
+	void Look(const FInputActionValue& value);
 public:	
 
 	// Called every frame
