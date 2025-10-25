@@ -4,11 +4,12 @@
 #include "GameFramework/Character.h"
 #include "Player01.generated.h"
 
+struct FInputActionValue;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
-struct FInputActionValue;
+class AProjectileActor;
 
 UCLASS()
 class UE5CURSO_API APlayer01 : public ACharacter
@@ -27,6 +28,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Components)
 	UCameraComponent* CameraComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = Components)
+	USceneComponent* FireSceneComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	UInputMappingContext* DefaultMappingContext;
 
@@ -39,11 +43,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputAction* FireAction;
+
+	TSubclassOf<AProjectileActor> ProjectileActorClass;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	void Move(const FInputActionValue& value);
 	void Look(const FInputActionValue& value);
+
+	void Fire();
 public:	
 
 	// Called every frame
