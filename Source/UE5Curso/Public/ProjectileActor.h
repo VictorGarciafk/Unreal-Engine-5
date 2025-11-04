@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/SphereComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "ProjectileActor.generated.h"
 
-class USphereComponent;
-class UProjectileMovementComponent;
+//class USphereComponent;
+//class UProjectileMovementComponent;
 
 UCLASS()
 class UE5CURSO_API AProjectileActor : public AActor
@@ -28,11 +30,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Components)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
+	// Projectile material
+	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
+	UMaterialInstanceDynamic* ProjectileMaterialInstance;
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	//virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	void OnProjectHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+	UFUNCTION()
+	void OnProjectHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		FVector NormalImpulse, const FHitResult& Hit);
 };

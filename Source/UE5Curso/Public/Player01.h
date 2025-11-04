@@ -46,6 +46,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	UInputAction* FireAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = ProjectileConfig)
 	TSubclassOf<AProjectileActor> ProjectileActorClass;
 
 	// Called when the game starts or when spawned
@@ -54,6 +55,7 @@ protected:
 	void Move(const FInputActionValue& value);
 	void Look(const FInputActionValue& value);
 
+	UFUNCTION()
 	void Fire();
 public:	
 
